@@ -6,7 +6,8 @@ from src.task.routes import router as task_router
 from src.users.routes import router as user_router  
 from src.users.models import UserModel
 from fastapi.security import HTTPAuthorizationCredentials , HTTPBearer
-
+from fastapi.middleware.cors import CORSMiddleware
+import time 
 
 tags_metadata = [
     {
@@ -45,9 +46,30 @@ app=FastAPI(
     
     )
 
-app.include_router(task_router , prefix="" )
+app.include_router(task_router)
 
-app.include_router(user_router )
+app.include_router(user_router)
+
+
+@app.middleware("http")
+async def add_process_time_header(request:Request,call_next):
+    start_time= time.perf_counter()
+    response = await call_next(request)
+    process_time = time.perf_counter()-start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    return response
+
+origins = [
+    
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # from fastapi.security import APIKeyHeader
@@ -87,6 +109,12 @@ def set_cookie(response: Response):
 def get_cookie(request : Request):
     print (request.__dict__)
     return {"message":"cookie has been get "}
+
+
+
+@app.get("/")  
+def read_root():
+    return {"message": "سلام! سرور FastAPI فعال است."}
 
 
 

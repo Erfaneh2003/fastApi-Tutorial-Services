@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+
+<style>
+:root {
+    --primary: #6366f1;
+    --secondary: #8b5cf6;
+    --dark: #1f2933;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 380px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(14px);
+    padding: 35px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    color: #fff;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.input-group {
+    margin-bottom: 18px;
+}
+
+label {
+    font-size: 14px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    margin-top: 6px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--dark);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.login-links {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.login-links a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.message {
+    margin-top: 15px;
+    text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-card">
+    <h1>Welcome Back</h1>
+
+    <form id="loginForm">
+        <div class="input-group">
+            <label>Username</label>
+            <input type="text" id="username" required>
+        </div>
+
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="password" required>
+        </div>
+
+        <button type="submit">Sign In</button>
+    </form>
+
+    <div class="login-links">
+        <a href="#">Forgot password?</a> | <a href="#">Sign up</a>
+    </div>
+
+    <div class="message" id="message"></div>
+</div>
+
+<script>
+const form = document.getElementById("loginForm");
+const message = document.getElementById("message");
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    message.textContent = "Signing in...";
+    message.style.color = "#fff";
+
+    try {
+        const res = await fetch("http://127.0.0.1:8000/users/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            message.textContent = "✅ Logged in successfully";
+            message.style.color = "#22c55e";
+
+            // ذخیره نام کاربر
+            localStorage.setItem("username", username);
+
+            // انتقال به صفحه بعد
+            setTimeout(() => {
+                window.location.href = "dashboard.html";
+            }, 1500);
+
+        } else {
+            message.textContent = data.message || "❌ Invalid credentials";
+            message.style.color = "#f87171";
+        }
+
+    } catch {
+        message.textContent = "❌ Cannot connect to server";
+        message.style.color = "#f87171";
+    }
+});
+</script>
+
+</body>
+</html>

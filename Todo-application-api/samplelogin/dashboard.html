@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+
+<style>
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    color: #fff;
+}
+
+.card {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(14px);
+    padding: 40px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+h1 {
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 18px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h1>✅ Logged in successfully</h1>
+    <p id="welcomeText"></p>
+</div>
+
+<script>
+const username = localStorage.getItem("username");
+
+if (!username) {
+    window.location.href = "login.html";
+} else {
+    document.getElementById("welcomeText").textContent =
+        `Welcome, ${username} 👋`;
+}
+</script>
+
+</body>
+</html>
